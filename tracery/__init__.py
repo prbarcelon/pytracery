@@ -241,7 +241,8 @@ class Grammar(object):
         self.errors.extend(root.errors)
         return root
 
-    def flatten(self, rule, allow_escape_chars=False):
+    def flatten(self, rule, allow_escape_chars=False, seed=None):
+        random.seed(seed)
         root = self.expand(rule, allow_escape_chars)
         return root.finished_text
 
