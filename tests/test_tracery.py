@@ -385,6 +385,16 @@ class TestStrings(TestPytracery):
         grammar.add_modifiers(base_english)
         self.assertEqual("hello, WORLD!", grammar.flatten("#origin#"))
 
+class TestSeeds(TestPytracery):
+    def test_seeds(self):
+        src = "#origin#"
+        allow_escape_chars = False
+        seed = 1
+        out1 = self.grammar.flatten(src, allow_escape_chars, seed)
+        out2 = self.grammar.flatten(src, allow_escape_chars, seed)
+
+        self.assertEqual(out1, out2)
+
 
 class TestErrors(TestPytracery):
 
