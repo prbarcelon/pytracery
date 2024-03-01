@@ -41,7 +41,7 @@ class Node(object):
             sections, errors = parse(child_rule)
             self.errors.extend(errors)
             for i, section in enumerate(sections):
-                node = Node(self, i, { **section, 'seed': self.seed })
+                node = Node(self, i, {**section, 'seed': self.seed})
                 self.children.append(node)
                 if not prevent_recursion:
                     node.expand(prevent_recursion)

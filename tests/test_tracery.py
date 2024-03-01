@@ -385,6 +385,7 @@ class TestStrings(TestPytracery):
         grammar.add_modifiers(base_english)
         self.assertEqual("hello, WORLD!", grammar.flatten("#origin#"))
 
+
 class TestSeeds(TestPytracery):
     def test_seeds(self):
         src = "#origin#"
