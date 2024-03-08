@@ -29,6 +29,7 @@ class Node(object):
             self.child_index = child_index
         self.raw = settings['raw']
         self.type = settings.get('type', None)
+        self.seed=settings.get('seed', None)
         self.is_expanded = False
 
     def expand_children(self, child_rule, prevent_recursion=False):
@@ -40,7 +41,7 @@ class Node(object):
             sections, errors = parse(child_rule)
             self.errors.extend(errors)
             for i, section in enumerate(sections):
-                node = Node(self, i, section)
+                node = Node(self, i, {**section, 'seed': self.seed})
                 self.children.append(node)
                 if not prevent_recursion:
                     node.expand(prevent_recursion)
@@ -138,14 +139,14 @@ class NodeAction(object):  # has a 'raw' attribute
             self.finished_rules = []
             self.rule_nodes = []
             for rule_section in self.rule_sections:
-                n = Node(grammar, 0, {'type': -1, 'raw': rule_section})
+                n = Node(grammar, 0, {'type': -1, 'raw': rule_section, 'seed': self.node.seed})
                 n.expand()
                 self.finished_rules.append(n.finished_text)
             grammar.push_rules(self.target, self.finished_rules, self)
         elif self.type == 1:
             grammar.pop_rules(self.target)
         elif self.type == 2:
-            grammar.flatten(self.target, True)
+            grammar.flatten(self.target, True, self.node.seed)
 
     def to_text(self): pass  # FIXME
 
@@ -230,19 +231,20 @@ class Grammar(object):
             self.symbols = dict(
                 (k, Symbol(self, k, v)) for k, v in raw.items())
 
-    def create_root(self, rule):
-        return Node(self, 0, {'type': -1, 'raw': rule})
+    def create_root(self, rule, seed=None):
+        return Node(self, 0, {'type': -1, 'raw': rule, 'seed': seed})
 
-    def expand(self, rule, allow_escape_chars=False):
-        root = self.create_root(rule)
+    def expand(self, rule, allow_escape_chars=False, seed=None):
+        root = self.create_root(rule, seed)
         root.expand()
         if not allow_escape_chars:
             root.clear_escape_chars()
         self.errors.extend(root.errors)
         return root
 
-    def flatten(self, rule, allow_escape_chars=False):
-        root = self.expand(rule, allow_escape_chars)
+    def flatten(self, rule, allow_escape_chars=False, seed=None):
+        random.seed(seed)
+        root = self.expand(rule, allow_escape_chars, seed)
         return root.finished_text
 
     def push_rules(self, key, raw_rules, source_action=None):
