@@ -33,7 +33,7 @@ Usage
 -----
 
 See `Kate Compton's Tracery
-tutorial <http://www.crystalcodepalace.com/traceryTut.html>`_ for information
+tutorial <https://web.archive.org/web/20190324081511/http://www.crystalcodepalace.com:80/traceryTut.html>`_ for information
 about how Tracery works. In the Python port, you use Python dictionaries
 instead of JavaScript objects for the rules, but the concept is the same
 otherwise.
